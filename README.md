@@ -1,6 +1,25 @@
 # Pixel Quest
 
-A retro RPG pixel-art scene that acts out what your coding agent is doing. The hero rests at the tavern or the campfire when things are idle. Reading and searching send them through the forest, and web research means riding out across open country. Reviews take them to the library with the council of sages. Edits are battles with bugs, test and build runs wake the Trial Dragon, and every finished turn ends at a treasure chest. Stats carry across sessions: XP, bugs slain, quests completed and hearts lost to errors.
+A retro RPG pixel-art scene that acts out what your coding agent is doing.
+
+| What the agent is doing | Scene |
+|---|---|
+| Idle (switches every 90s) | **The Rusty Tankard**: the hero sips ale across from a wizard who hums little music notes. A barkeep polishes mugs, a cat sleeps by the fireplace, and stars twinkle through the window.<br>**Campfire**: the hero toasts a marshmallow that slowly browns. The wizard's pipe glows, the ranger snores in a bedroll, and sparks rise under the moon. |
+| Reading or searching code | Walking through the **Whispering Woods** with parallax pines and snowy peaks |
+| Web search or fetch | **Open country**: fences, rolling hills, wildflowers and a spinning windmill |
+| A subagent is launched | The **party** marches together: ranger, wizard and hero |
+| Critique or review | **The library**: candlelit desk, page flips, dust motes, a blinking owl, and a wizard sage for review agents |
+| Editing files | **Battling bugs** (purple beetles). The hero swings, the bug flashes white and is knocked back, and every third one bursts into a puff with gold coins. |
+| Shell commands | Same fight, but against slimes |
+| Tests or builds, or any failed tool call | **Dungeon boss**: the Trial Dragon breathes fire at the hero's shield, and the hero flashes red when hurt |
+| Thinking between tool calls | The hero at a crossroads signpost with a "?" bubble |
+| Turn finished | **Victory**: a treasure chest opens, sparkles fly and the hero jumps for joy, then it's back to the tavern |
+
+Below the picture is a caption, like "Battling bugs in Program.cs", and a small status bar: level, hearts (errors cost one, finishing a turn restores them), XP, bugs slain and quests done. Stats carry across sessions.
+
+A turn counts as critique when your prompt mentions review, critique, audit or adversarial, or when the agent launches a reviewer. In those turns, reading and searching code show the library instead of the forest.
+
+Codex and agy often read code through the shell, so their shell commands are sorted by what they look like: `cat`, `rg`, `git log` and the like go to the forest, `curl` and `gh` ride out to open country, test and build commands wake the dragon, and anything else fights slimes.
 
 It works with three agents:
 
