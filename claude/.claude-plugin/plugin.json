@@ -1,0 +1,9 @@
+{
+  "name": "pixel-quest",
+  "version": "0.1.0",
+  "description": "A retro RPG pixel-art pane that acts out what Claude is doing: tavern and campfire when idle, journeys for research, the library for critique, battles for coding and debugging.",
+  "author": { "name": "Johnny Chen" },
+  "license": "MIT",
+  "repository": "https://github.com/johnnyhchen/pixel-quest",
+  "types": "./types/index.d.ts"
+}

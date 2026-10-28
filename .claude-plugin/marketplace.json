@@ -1,0 +1,12 @@
+{
+  "name": "pixel-quest",
+  "owner": { "name": "Johnny Chen" },
+  "description": "Pixel Quest: a retro RPG scene that acts out what your coding agent is doing.",
+  "plugins": [
+    {
+      "name": "pixel-quest",
+      "source": "./claude",
+      "description": "Retro RPG pixel-art pane that acts out what Claude is doing. Off until /quest."
+    }
+  ]
+}

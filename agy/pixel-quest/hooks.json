@@ -1,0 +1,16 @@
+{
+  "pixel-quest": {
+    "PreInvocation": [
+      { "type": "command", "command": "~/.local/share/pixel-quest/hook agy PreInvocation", "timeout": 5 }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [{ "type": "command", "command": "~/.local/share/pixel-quest/hook agy PostToolUse", "timeout": 5 }]
+      }
+    ],
+    "Stop": [
+      { "type": "command", "command": "~/.local/share/pixel-quest/hook agy Stop", "timeout": 5 }
+    ]
+  }
+}

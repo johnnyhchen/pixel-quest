@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# Pixel Quest for Codex and agy: a retro RPG scene that acts out what the agent is doing.
+#   quest [small|medium|large] [left|right]   run the viewer here (or retune a running one)
+#   quest close                               stop the running viewer
+#   quest status | reset | debug on|off
+set -euo pipefail
+
+HOME_DIR="$HOME/.local/share/pixel-quest"
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/pixel-quest"
+PID_FILE="$STATE_DIR/viewer.pid"
+mkdir -p "$STATE_DIR"
+command -v node >/dev/null || PATH="${FNM_DIR:-$HOME/.local/share/fnm}/aliases/default/bin:$PATH"
+
+running() { [[ -f "$PID_FILE" ]] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; }
+
+size="" align="" action=""
+for w in "$@"; do
+  case "$(tr '[:upper:]' '[:lower:]' <<<"$w")" in
+    small|medium|large) size="$w" ;;
+    left|right) align="$w" ;;
+    close|status|reset) action="$w" ;;
+    debug) action="debug" ;;
+    on|off) [[ "$action" == debug ]] && debug="$w" || { echo "Unknown option: $w" >&2; exit 2; } ;;
+    *) echo "Unknown option: $w. Try: quest [small|medium|large] [left|right] | close | status | reset | debug on|off" >&2; exit 2 ;;
+  esac
+done
+
+case "$action" in
+  close)
+    if running; then kill "$(cat "$PID_FILE")"; echo "The adventure pane is closed. \`quest\` opens it again."
+    else echo "No Pixel Quest viewer is running."; fi
+    exit 0 ;;
+  status)
+    running && echo "viewer: running (pid $(cat "$PID_FILE"))" || echo "viewer: not running"
+    cat "$STATE_DIR/prefs.json" 2>/dev/null && echo
+    node -e 'const s=require(process.argv[1]);console.log(`${s.harness} · ${s.scene} · ${s.caption}`);console.log(s.stats)' "$STATE_DIR/state.json" 2>/dev/null || echo "no events yet"
+    exit 0 ;;
+  reset)
+    rm -f "$STATE_DIR/state.json"; echo "Stats reset. The hero is back at Lv 1."; exit 0 ;;
+  debug)
+    if [[ "${debug:-on}" == on ]]; then touch "$STATE_DIR/debug"; echo "Logging raw hook payloads to $STATE_DIR/events.log"
+    else rm -f "$STATE_DIR/debug"; echo "Hook payload logging off."; fi
+    exit 0 ;;
+esac
+
+# Merge the new size/side into saved prefs; a running viewer picks the change up within a second.
+node -e '
+const fs = require("fs"), [file, size, align] = process.argv.slice(1)
+let p = { size: "medium", align: "left" }
+try { p = { ...p, ...JSON.parse(fs.readFileSync(file, "utf8")) } } catch {}
+if (size) p.size = size
+if (align) p.align = align
+fs.writeFileSync(file, JSON.stringify(p))
+console.error(`Pixel Quest: ${p.size}, ${p.align}-aligned.`)
+' "$STATE_DIR/prefs.json" "$size" "$align"
+
+if running; then exit 0; fi
+
+if [[ -t 1 ]]; then
+  exec node "$HOME_DIR/view.mjs"
+elif [[ -n "${TMUX:-}" ]]; then
+  cols=$(node -e 'const p=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));console.log({small:48,medium:64,large:120}[p.size]+2)' "$STATE_DIR/prefs.json")
+  tmux split-window -h -d -l "$cols" "node '$HOME_DIR/view.mjs'"
+  echo "Opened Pixel Quest in a tmux split."
+else
+  echo "No viewer is running and there's no terminal here to draw in. Open a split (Ghostty: cmd+D) and run: quest"
+fi

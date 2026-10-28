@@ -1,0 +1,10 @@
+#!/bin/sh
+# Hook entry for Codex and agy: `hook <codex|agy> <event>`, payload on stdin.
+# Hooks don't inherit fnm's per-shell PATH, so fall back to fnm's default node.
+NODE=$(command -v node 2>/dev/null)
+[ -n "$NODE" ] || NODE="${FNM_DIR:-$HOME/.local/share/fnm}/aliases/default/bin/node"
+if [ ! -x "$NODE" ]; then
+  [ "$1" = agy ] && echo '{}'
+  exit 0
+fi
+exec "$NODE" "$(dirname "$0")/hook.mjs" "$@"
